@@ -1,0 +1,318 @@
+
+{% extends "base.html" %}
+
+{% block title %}Incident Management | Cyber Sentinel{% endblock %}
+
+{% block content %}
+
+<style>
+.incident-page {
+    color: #eaf2ff;
+    padding: 25px;
+}
+
+.incident-hero {
+    background: linear-gradient(120deg, #102a46, #123d5c);
+    padding: 28px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    border: 1px solid #245477;
+}
+
+.incident-hero h1 {
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+
+.incident-hero p {
+    color: #b8c9dc;
+    margin: 0;
+}
+
+.incident-card {
+    background: #101f33;
+    border: 1px solid #263e58;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 24px;
+}
+
+.incident-card h2 {
+    margin-top: 0;
+    color: #50d9f5;
+}
+
+.incident-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.incident-form .full {
+    grid-column: 1 / -1;
+}
+
+.incident-page label {
+    display: block;
+    margin-bottom: 8px;
+    color: #c9d8e9;
+}
+
+.incident-page input,
+.incident-page select,
+.incident-page textarea {
+    width: 100%;
+    padding: 12px;
+    background: #091729;
+    color: white;
+    border: 1px solid #34516e;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.incident-page textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.incident-btn {
+    padding: 10px 17px;
+    border: none;
+    border-radius: 8px;
+    background: #08b9d6;
+    color: #061827;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.incident-btn:hover {
+    background: #55dff5;
+}
+
+.delete-btn {
+    background: #e34c5b;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #ff6876;
+}
+
+.incident-table-wrap {
+    overflow-x: auto;
+}
+
+.incident-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+.incident-table th,
+.incident-table td {
+    padding: 13px;
+    text-align: left;
+    border-bottom: 1px solid #2a4058;
+}
+
+.incident-table th {
+    color: #55d9f3;
+    background: #142941;
+}
+
+.incident-table td {
+    color: #dce8f5;
+}
+
+.flash-message {
+    padding: 13px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: #173d35;
+    color: #a7f3d0;
+}
+
+.severity-critical { color: #ff6b78; font-weight: bold; }
+.severity-high { color: #ffad65; font-weight: bold; }
+.severity-medium { color: #f5d36b; font-weight: bold; }
+.severity-low { color: #75d9a5; font-weight: bold; }
+
+.status-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.status-form select {
+    min-width: 130px;
+}
+
+@media(max-width: 700px) {
+    .incident-form {
+        grid-template-columns: 1fr;
+    }
+
+    .incident-form .full {
+        grid-column: auto;
+    }
+
+    .incident-page {
+        padding: 12px;
+    }
+}
+</style>
+
+<div class="incident-page">
+
+    <div class="incident-hero">
+        <h1>Incident Management</h1>
+        <p>Report, monitor, update and manage security incidents.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="incident-card">
+        <h2>+ Report New Incident</h2>
+
+        <form method="POST" class="incident-form">
+            <input type="hidden" name="action" value="add">
+
+            <div class="full">
+                <label>Incident Title</label>
+                <input type="text" name="title"
+                       placeholder="Enter incident title" required>
+            </div>
+
+            <div>
+                <label>Severity</label>
+                <select name="severity">
+                    <option value="Critical">Critical</option>
+                    <option value="High">High</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Initial Status</label>
+                <select name="status">
+                    <option value="Open">Open</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+            </div>
+
+            <div class="full">
+                <label>Description</label>
+                <textarea name="description"
+                          placeholder="Describe the security incident..."
+                          required></textarea>
+            </div>
+
+            <div class="full">
+                <button type="submit" class="incident-btn">
+                    Submit Incident
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="incident-card">
+        <h2>Incident History</h2>
+
+        <div class="incident-table-wrap">
+            <table class="incident-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Incident</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Reported By</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for incident in incidents %}
+                    <tr>
+                        <td>#{{ incident.id }}</td>
+
+                        <td>
+                            <strong>{{ incident.title }}</strong><br>
+                            <small>{{ incident.description }}</small>
+                        </td>
+
+                        <td>
+                            <span class="severity-{{ incident.severity|lower }}">
+                                {{ incident.severity }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <form method="POST" class="status-form">
+                                <input type="hidden" name="action" value="update">
+                                <input type="hidden" name="incident_id"
+                                       value="{{ incident.id }}">
+
+                                <select name="status">
+                                    <option value="Open"
+                                        {% if incident.status == 'Open' %}selected{% endif %}>
+                                        Open
+                                    </option>
+
+                                    <option value="In Progress"
+                                        {% if incident.status == 'In Progress' %}selected{% endif %}>
+                                        In Progress
+                                    </option>
+
+                                    <option value="Resolved"
+                                        {% if incident.status == 'Resolved' %}selected{% endif %}>
+                                        Resolved
+                                    </option>
+                                </select>
+
+                                <button class="incident-btn" type="submit">
+                                    Update
+                                </button>
+                            </form>
+                        </td>
+
+                        <td>{{ incident.reported_by }}</td>
+                        <td>{{ incident.created_at }}</td>
+
+                        <td>
+                            <form method="POST"
+                                  onsubmit="return confirm('Delete this incident?');">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="incident_id"
+                                       value="{{ incident.id }}">
+
+                                <button type="submit"
+                                        class="incident-btn delete-btn">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align:center;">
+                            No incidents reported yet.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

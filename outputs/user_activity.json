@@ -1,0 +1,51 @@
+[
+    {
+        "email": "seasho0616@gmail.com",
+        "name": "R Seashora",
+        "role": "user",
+        "action": "Login",
+        "time": "26-11-2026 10:07:56 AM"
+    },
+    {
+        "email": "seasho0616@gmail.com",
+        "name": "R Seashora",
+        "role": "user",
+        "action": "Logout",
+        "time": "26-11-2026 10:07:47 AM"
+    },
+    {
+        "email": "admin@cybersecure.local",
+        "name": "Administrator",
+        "role": "admin",
+        "action": "User Activated: seasho0616@gmail.com",
+        "time": "25-11-2026 11:49:42 AM"
+    },
+    {
+        "email": "admin@cybersecure.local",
+        "name": "Administrator",
+        "role": "admin",
+        "action": "User Deactivated: seasho0616@gmail.com",
+        "time": "25-11-2026 11:49:38 AM"
+    },
+    {
+        "email": "admin@cybersecure.local",
+        "name": "Administrator",
+        "role": "admin",
+        "action": "Login",
+        "time": "25-11-2026 11:43:33 AM"
+    },
+    {
+        "email": "admin@cybersecure.local",
+        "name": "Administrator",
+        "role": "admin",
+        "action": "Login",
+        "time": "25-11-2026 11:43:31 AM"
+    },
+    {
+        "email": "admin@cybersecure.local",
+        "name": "Administrator",
+        "role": "admin",
+        "action": "Logout",
+        "time": "25-11-2026 11:42:05 AM"
+    }
+]

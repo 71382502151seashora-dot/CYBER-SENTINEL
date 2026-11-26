@@ -1,0 +1,213 @@
+
+{% extends "base.html" %}
+
+{% block title %}Admin Control Panel | Cyber Sentinel{% endblock %}
+{% block heading %}Admin Control Panel{% endblock %}
+
+{% block content %}
+
+<style>
+.admin-page {
+    color: #eaf2ff;
+    padding: 10px 0;
+}
+
+.admin-hero {
+    padding: 28px;
+    border-radius: 16px;
+    background: linear-gradient(120deg,#102640,#164d68);
+    border: 1px solid #27617b;
+    margin-bottom: 25px;
+}
+
+.admin-hero h1 {
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+
+.admin-hero p {
+    color: #bdd1e3;
+    margin: 0;
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 17px;
+    margin-bottom: 25px;
+}
+
+.admin-stat {
+    padding: 22px;
+    border-radius: 14px;
+    background: #102137;
+    border: 1px solid #29445f;
+}
+
+.admin-stat p {
+    color: #a9bfd4;
+    margin: 0 0 12px;
+}
+
+.admin-stat h2 {
+    font-size: 30px;
+    color: #40dafa;
+    margin: 0;
+}
+
+.admin-card {
+    background: #102137;
+    border: 1px solid #29445f;
+    border-radius: 15px;
+    padding: 22px;
+    margin-bottom: 24px;
+}
+
+.admin-card h2 {
+    color: #4ddbf4;
+    margin-top: 0;
+}
+
+.admin-table-wrap {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #29445f;
+}
+
+.admin-table th {
+    background: #172e47;
+    color: #55dafa;
+}
+
+.admin-table td {
+    color: #dce8f5;
+}
+
+.role-admin {
+    color: #ffbd70;
+    font-weight: bold;
+}
+
+.role-user {
+    color: #71d9a6;
+    font-weight: bold;
+}
+
+.admin-info {
+    color: #a9bfd4;
+    line-height: 1.8;
+}
+
+@media(max-width:700px) {
+    .admin-stats {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="admin-page">
+
+    <div class="admin-hero">
+        <h1>Admin Control Center</h1>
+        <p>
+            Manage registered accounts and monitor user statistics.
+        </p>
+    </div>
+
+    <div class="admin-stats">
+
+        <div class="admin-stat">
+            <p>Total Registered Users</p>
+            <h2>{{ data.total_users }}</h2>
+        </div>
+
+        <div class="admin-stat">
+            <p>Administrator Accounts</p>
+            <h2>{{ data.admin_count }}</h2>
+        </div>
+
+        <div class="admin-stat">
+            <p>Normal User Accounts</p>
+            <h2>{{ data.normal_users }}</h2>
+        </div>
+
+    </div>
+
+    <div class="admin-card">
+
+        <h2>Registered User Management</h2>
+
+        <div class="admin-table-wrap">
+
+            <table class="admin-table">
+
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>User Name</th>
+                        <th>Email Address</th>
+                        <th>Account Role</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for user in data.users %}
+
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+
+                        <td>
+                            {% if user.role == 'admin' %}
+                                <span class="role-admin">Administrator</span>
+                            {% else %}
+                                <span class="role-user">Normal User</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="4" style="text-align:center;">
+                            No registered users found.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <div class="admin-card">
+        <h2>System Administration</h2>
+
+        <div class="admin-info">
+            <p>✔ Admin authentication required.</p>
+            <p>✔ Registered user details displayed.</p>
+            <p>✔ Account roles are monitored.</p>
+            <p>✔ User information is loaded from the application user store.</p>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

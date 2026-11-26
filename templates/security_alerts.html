@@ -1,0 +1,317 @@
+
+{% extends "base.html" %}
+
+{% block title %}Security Alert Center | Cyber Sentinel{% endblock %}
+
+{% block content %}
+
+<style>
+.alert-page {
+    padding: 24px;
+    color: #eaf2ff;
+}
+
+.alert-hero {
+    padding: 28px;
+    border-radius: 16px;
+    background: linear-gradient(120deg, #10233e, #164768);
+    border: 1px solid #285574;
+    margin-bottom: 24px;
+}
+
+.alert-hero h1 {
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+
+.alert-hero p {
+    color: #bdcddd;
+    margin: 0;
+}
+
+.alert-stats {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 24px;
+}
+
+.alert-stat {
+    background: #102137;
+    border: 1px solid #29415c;
+    padding: 20px;
+    border-radius: 13px;
+}
+
+.alert-stat p {
+    color: #a9bdd2;
+    margin: 0 0 10px;
+}
+
+.alert-stat h2 {
+    font-size: 27px;
+    margin: 0;
+}
+
+.critical { color: #ff6475; }
+.high { color: #ff9f5c; }
+.medium { color: #f5d16c; }
+.low { color: #62d6a0; }
+
+.alert-card {
+    background: #102137;
+    border: 1px solid #29415c;
+    padding: 20px;
+    border-radius: 14px;
+    margin-bottom: 22px;
+}
+
+.alert-card h2 {
+    color: #55d9f3;
+    margin-top: 0;
+}
+
+.alert-table-wrap {
+    overflow-x: auto;
+}
+
+.alert-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+.alert-table th,
+.alert-table td {
+    padding: 13px;
+    text-align: left;
+    border-bottom: 1px solid #2b4058;
+}
+
+.alert-table th {
+    background: #162d47;
+    color: #5bdcf3;
+}
+
+.alert-table td {
+    color: #dce8f5;
+}
+
+.alert-page select {
+    background: #091729;
+    color: white;
+    border: 1px solid #34516e;
+    padding: 9px;
+    border-radius: 7px;
+}
+
+.alert-btn {
+    padding: 9px 13px;
+    border: none;
+    border-radius: 7px;
+    background: #08b9d6;
+    color: #061827;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.alert-btn:hover {
+    background: #55dff5;
+}
+
+.severity-tag {
+    font-weight: bold;
+}
+
+.severity-tag.Critical { color: #ff6475; }
+.severity-tag.High { color: #ff9f5c; }
+.severity-tag.Medium { color: #f5d16c; }
+.severity-tag.Low { color: #62d6a0; }
+
+.flash-message {
+    padding: 12px;
+    border-radius: 8px;
+    background: #173d35;
+    color: #a7f3d0;
+    margin-bottom: 15px;
+}
+
+.empty-alert {
+    padding: 25px;
+    text-align: center;
+    color: #a9bdd2;
+}
+
+@media(max-width: 900px) {
+    .alert-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media(max-width: 500px) {
+    .alert-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .alert-page {
+        padding: 12px;
+    }
+}
+</style>
+
+<div class="alert-page">
+
+    <div class="alert-hero">
+        <h1>Security Alert Center</h1>
+        <p>Monitor, investigate and manage cybersecurity alerts.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% if not available %}
+
+        <div class="alert-card empty-alert">
+            <h2>Dataset Not Found</h2>
+            <p>Please add your cybersecurity dataset to continue.</p>
+        </div>
+
+    {% else %}
+
+        {% if is_demo %}
+        <div class="alert-card">
+            <strong>Demo Dataset:</strong>
+            Alert information is generated from demo data.
+        </div>
+        {% endif %}
+
+        <div class="alert-stats">
+
+            <div class="alert-stat">
+                <p>Total Alerts</p>
+                <h2>{{ total }}</h2>
+            </div>
+
+            <div class="alert-stat">
+                <p>Critical Alerts</p>
+                <h2 class="critical">{{ critical }}</h2>
+            </div>
+
+            <div class="alert-stat">
+                <p>High Alerts</p>
+                <h2 class="high">{{ high }}</h2>
+            </div>
+
+            <div class="alert-stat">
+                <p>Medium Alerts</p>
+                <h2 class="medium">{{ medium }}</h2>
+            </div>
+
+            <div class="alert-stat">
+                <p>Low Alerts</p>
+                <h2 class="low">{{ low }}</h2>
+            </div>
+
+        </div>
+
+        <div class="alert-card">
+            <h2>Security Alert History</h2>
+
+            <div class="alert-table-wrap">
+                <table class="alert-table">
+                    <thead>
+                        <tr>
+                            <th>Alert ID</th>
+                            <th>Threat Name</th>
+                            <th>Severity</th>
+                            <th>Source IP</th>
+                            <th>Destination IP</th>
+                            <th>Protocol</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for alert in alerts %}
+                        <tr>
+                            <td>#{{ alert.id }}</td>
+
+                            <td>{{ alert.name }}</td>
+
+                            <td>
+                                <span class="severity-tag {{ alert.severity }}">
+                                    {{ alert.severity }}
+                                </span>
+                            </td>
+
+                            <td>{{ alert.source_ip }}</td>
+                            <td>{{ alert.destination_ip }}</td>
+                            <td>{{ alert.protocol }}</td>
+
+                            <td>{{ alert.status }}</td>
+
+                            <td>
+                                <form method="POST">
+                                    <input type="hidden"
+                                           name="alert_id"
+                                           value="{{ alert.id }}">
+
+                                    <select name="status">
+                                        <option value="New"
+                                            {% if alert.status == 'New' %}selected{% endif %}>
+                                            New
+                                        </option>
+
+                                        <option value="Investigating"
+                                            {% if alert.status == 'Investigating' %}selected{% endif %}>
+                                            Investigating
+                                        </option>
+
+                                        <option value="Resolved"
+                                            {% if alert.status == 'Resolved' %}selected{% endif %}>
+                                            Resolved
+                                        </option>
+                                    </select>
+
+                                    <button type="submit" class="alert-btn">
+                                        Update
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="empty-alert">
+                                No security alerts found.
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    {% endif %}
+
+    <div class="alert-card">
+        <h2>Alert Information</h2>
+        <p>
+            Alerts are generated from threat labels in the available dataset.
+            Severity is assigned using simple keyword-based rules.
+        </p>
+        <p>
+            This page is dataset-based and does not perform live network monitoring.
+            Review alerts before treating them as confirmed security incidents.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

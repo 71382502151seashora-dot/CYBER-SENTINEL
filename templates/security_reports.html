@@ -1,0 +1,408 @@
+
+{% extends "base.html" %}
+
+{% block title %}Security Reports | Cyber Sentinel{% endblock %}
+
+{% block content %}
+
+<style>
+.report-page {
+    padding: 25px;
+    color: #e8eefc;
+}
+
+/* HERO */
+.report-hero {
+    background: linear-gradient(120deg, #0d2035, #102a43);
+    border: 1px solid #176080;
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 25px #0003;
+}
+
+.report-hero h1 {
+    font-size: 28px;
+    margin: 0 0 10px;
+    color: #ffffff;
+}
+
+.report-hero p {
+    color: #b8d5e8;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.report-tag {
+    display: inline-block;
+    background: #123b55;
+    color: #20dcfa;
+    padding: 7px 13px;
+    border-radius: 20px;
+    margin-top: 15px;
+    font-size: 12px;
+    border: 1px solid #176080;
+}
+
+/* CARDS */
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.report-card {
+    background: #111c30;
+    border: 1px solid #23445f;
+    border-radius: 15px;
+    padding: 22px;
+    transition: .25s;
+}
+
+.report-card:hover {
+    border-color: #19cbea;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px #00cfff18;
+}
+
+.report-card p {
+    color: #aabfd2;
+    font-size: 14px;
+    margin: 0 0 12px;
+}
+
+.report-card h2 {
+    margin: 0;
+    font-size: 29px;
+}
+
+.purple { color: #19dafa; }
+.red { color: #ff7b8b; }
+.green { color: #5be2a3; }
+.blue { color: #6acbff; }
+
+/* REPORT SECTIONS */
+.report-section {
+    background: #111c30;
+    border: 1px solid #23445f;
+    border-radius: 15px;
+    padding: 22px;
+    margin-bottom: 23px;
+    overflow-x: auto;
+}
+
+.report-section h2 {
+    font-size: 19px;
+    margin: 0 0 18px;
+    color: #e8f7ff;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 400px;
+}
+
+.report-table th {
+    background: #102c43;
+    color: #20dcfa;
+    text-align: left;
+    padding: 13px;
+    font-size: 13px;
+    border-bottom: 1px solid #176080;
+}
+
+.report-table td {
+    padding: 13px;
+    border-bottom: 1px solid #263e55;
+    font-size: 13px;
+    color: #d8e8f5;
+}
+
+.report-table tr:hover td {
+    background: #142b40;
+}
+
+.report-note {
+    background: #10283a;
+    border: 1px solid #176080;
+    color: #bceaff;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 22px;
+    line-height: 1.6;
+    font-size: 13px;
+}
+
+.report-empty {
+    color: #aabfd2;
+    padding: 12px 0;
+}
+
+/* BUTTON */
+.report-print-btn {
+    background: linear-gradient(120deg, #087da8, #18b9dc);
+    color: white;
+    border: 1px solid #20dcfa;
+    padding: 13px 22px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: .25s;
+}
+
+.report-print-btn:hover {
+    background: linear-gradient(120deg, #08678d, #079bbd);
+    box-shadow: 0 0 18px #18dafa55;
+    transform: translateY(-2px);
+}
+
+/* RESPONSIVE */
+@media(max-width:600px) {
+    .report-page {
+        padding: 12px;
+    }
+
+    .report-hero {
+        padding: 20px;
+    }
+
+    .report-hero h1 {
+        font-size: 23px;
+    }
+}
+
+/* PRINT */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .report-page,
+    .report-section,
+    .report-card,
+    .report-hero {
+        color: black !important;
+        background: white !important;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+    }
+
+    .report-hero p,
+    .report-card p,
+    .report-table td,
+    .report-table th,
+    .report-section h2 {
+        color: black !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}
+</style>
+
+<div class="report-page">
+
+    <div class="report-hero">
+        <h1>Security Reports</h1>
+
+        <p>
+            Review cybersecurity analysis results, threat categories,
+            network protocols and records requiring investigation.
+        </p>
+
+        <span class="report-tag">
+            SECURITY REPORT CENTER
+        </span>
+    </div>
+
+    {% if not data.available %}
+
+        <div class="report-note">
+            {{ data.message }}
+        </div>
+
+    {% else %}
+
+        {% if data.is_demo %}
+            <div class="report-note">
+                This report is currently generated using demo dataset.
+            </div>
+        {% endif %}
+
+        <div class="report-grid">
+
+            <div class="report-card">
+                <p>Total Network Records</p>
+                <h2 class="blue">{{ data.total }}</h2>
+            </div>
+
+            <div class="report-card">
+                <p>Records Requiring Review</p>
+                <h2 class="red">{{ data.flagged }}</h2>
+            </div>
+
+            <div class="report-card">
+                <p>Normal / Benign Records</p>
+                <h2 class="green">{{ data.normal }}</h2>
+            </div>
+
+            <div class="report-card">
+                <p>Threat Categories</p>
+                <h2 class="purple">{{ data.labels|length }}</h2>
+            </div>
+
+        </div>
+
+        <div class="report-section">
+
+            <h2>Threat Category Report</h2>
+
+            {% if data.labels %}
+
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Record Count</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in data.labels %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+
+                <p class="report-empty">
+                    No threat category records available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="report-section">
+
+            <h2>Protocol Analysis Report</h2>
+
+            {% if data.protocols %}
+
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Protocol</th>
+                            <th>Record Count</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in data.protocols %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+
+                <p class="report-empty">
+                    Protocol information unavailable.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="report-section">
+
+            <h2>Top Source IP Report</h2>
+
+            {% if data.top_sources %}
+
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Source IP Address</th>
+                            <th>Record Count</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in data.top_sources %}
+                        <tr>
+                            <td>{{ item.ip }}</td>
+                            <td>{{ item.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+
+                <p class="report-empty">
+                    Source IP information unavailable.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="report-section">
+
+            <h2>Report Information</h2>
+
+            <table class="report-table">
+                <tr>
+                    <th>Report Type</th>
+                    <td>Cybersecurity Dataset Analysis</td>
+                </tr>
+
+                <tr>
+                    <th>Detection Method</th>
+                    <td>{{ data.detection_basis|default("Dataset Analysis") }}</td>
+                </tr>
+
+                <tr>
+                    <th>Report Status</th>
+                    <td>Generated from available dataset</td>
+                </tr>
+
+                <tr>
+                    <th>Records Displayed</th>
+                    <td>{{ data.records|length }}</td>
+                </tr>
+            </table>
+
+        </div>
+
+        <div class="report-note">
+            This report summarizes the uploaded dataset.
+            Records requiring review are not automatically confirmed attacks.
+            Further investigation is required.
+        </div>
+
+        <div class="no-print" style="margin-bottom:25px;">
+            <button
+                onclick="window.print()"
+                class="report-print-btn">
+                Print / Save as PDF
+            </button>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

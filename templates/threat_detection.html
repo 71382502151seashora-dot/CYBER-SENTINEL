@@ -1,0 +1,399 @@
+
+{% extends "base.html" %}
+
+{% block title %}Threat Detection | Cyber Sentinel{% endblock %}
+
+{% block content %}
+
+<style>
+.threat-page {
+    color: #e8eefc;
+    padding: 25px;
+}
+
+.threat-hero {
+    background: linear-gradient(120deg, #111c38, #172e50);
+    border: 1px solid #29456d;
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.threat-hero h1 {
+    font-size: 29px;
+    margin: 0 0 10px;
+}
+
+.threat-hero p {
+    color: #aabbd6;
+    margin: 0;
+}
+
+.threat-tag {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 7px 13px;
+    border-radius: 20px;
+    background: #153c55;
+    color: #65ddff;
+    font-size: 12px;
+}
+
+.threat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.threat-card {
+    background: #111c30;
+    border: 1px solid #263c5b;
+    border-radius: 15px;
+    padding: 21px;
+}
+
+.threat-card p {
+    color: #9fb0ca;
+    margin: 0 0 12px;
+    font-size: 14px;
+}
+
+.threat-card h2 {
+    font-size: 29px;
+    margin: 0;
+}
+
+.red { color: #ff727d; }
+.green { color: #55e2a3; }
+.blue { color: #61caff; }
+.yellow { color: #ffc66d; }
+
+.threat-section {
+    background: #111c30;
+    border: 1px solid #263c5b;
+    border-radius: 15px;
+    padding: 22px;
+    margin-bottom: 23px;
+    overflow-x: auto;
+}
+
+.threat-section h2 {
+    font-size: 19px;
+    margin: 0 0 18px;
+}
+
+.threat-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 450px;
+}
+
+.threat-table th {
+    background: #1a2b47;
+    color: #8edfff;
+    text-align: left;
+    padding: 13px;
+    font-size: 13px;
+}
+
+.threat-table td {
+    padding: 13px;
+    border-bottom: 1px solid #253750;
+    color: #d4deee;
+    font-size: 13px;
+}
+
+.threat-table tr:hover td {
+    background: #192a43;
+}
+
+.empty-message {
+    color: #9fb0ca;
+    padding: 18px 0;
+}
+
+.status-pill {
+    display: inline-block;
+    background: #492b34;
+    color: #ff9ca5;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+}
+
+.notice {
+    background: #30291b;
+    border: 1px solid #715a2b;
+    color: #f4d28a;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.demo-notice {
+    background: #172c48;
+    border-color: #315b82;
+    color: #9bdcff;
+}
+
+@media(max-width:600px) {
+    .threat-page { padding: 12px; }
+    .threat-hero { padding: 20px; }
+    .threat-hero h1 { font-size: 23px; }
+}
+</style>
+
+<div class="threat-page">
+
+    <div class="threat-hero">
+        <h1>Threat Detection & Investigation</h1>
+
+        <p>
+            Identify suspicious network records, examine source IP addresses,
+            and review potential cybersecurity threats.
+        </p>
+
+        <span class="threat-tag">
+            SECURITY ANALYSIS CENTER
+        </span>
+    </div>
+
+    {% if not data.available %}
+
+        <div class="notice">
+            {{ data.message }}
+        </div>
+
+    {% else %}
+
+        {% if data.is_demo %}
+            <div class="notice demo-notice">
+                DEMO DATASET: This page is currently using demo data.
+                Add your actual cybersecurity CSV dataset to analyze your own records.
+            </div>
+        {% endif %}
+
+        <div class="threat-grid">
+
+            <div class="threat-card">
+                <p>Total Network Records</p>
+                <h2 class="blue">{{ data.total }}</h2>
+            </div>
+
+            <div class="threat-card">
+                <p>Records Requiring Review</p>
+                <h2 class="red">{{ data.flagged }}</h2>
+            </div>
+
+            <div class="threat-card">
+                <p>Normal / Benign Records</p>
+                <h2 class="green">{{ data.normal }}</h2>
+            </div>
+
+            <div class="threat-card">
+                <p>Threat Categories</p>
+                <h2 class="yellow">{{ data.labels|length }}</h2>
+            </div>
+
+        </div>
+
+        <div class="notice">
+            <strong>Detection Method:</strong>
+            {{ data.detection_basis|default("Dataset analysis") }}.
+
+            {% if data.detection_basis == "Rule-based review" %}
+                Records are flagged using available screening rules.
+                These are indicators for investigation, not confirmed attacks.
+            {% else %}
+                Records are categorized using the labels present in your dataset.
+            {% endif %}
+        </div>
+
+        <!-- THREAT CATEGORIES -->
+
+        <div class="threat-section">
+
+            <h2>Threat Category Analysis</h2>
+
+            {% if data.labels %}
+
+                <table class="threat-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Record Count</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in data.labels %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.count }}</td>
+                            <td>
+                                <span class="status-pill">
+                                    Review
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+
+                <p class="empty-message">
+                    No records requiring review were found.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- SOURCE IP ANALYSIS -->
+
+        <div class="threat-section">
+
+            <h2>Top Suspicious Source IP Addresses</h2>
+
+            {% if data.top_sources %}
+
+                <table class="threat-table">
+                    <thead>
+                        <tr>
+                            <th>Source IP Address</th>
+                            <th>Flagged Records</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in data.top_sources %}
+                        <tr>
+                            <td>{{ item.ip }}</td>
+                            <td>{{ item.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+
+                <p class="empty-message">
+                    Source IP information is not available for this analysis.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- PROTOCOL ANALYSIS -->
+
+        <div class="threat-section">
+
+            <h2>Network Protocol Distribution</h2>
+
+            {% if data.protocols %}
+
+                <table class="threat-table">
+                    <thead>
+                        <tr>
+                            <th>Protocol</th>
+                            <th>Record Count</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in data.protocols %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+
+                <p class="empty-message">
+                    Protocol information is not available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- INVESTIGATION RECORDS -->
+
+        <div class="threat-section">
+
+            <h2>Threat Investigation Records</h2>
+
+            <p class="empty-message">
+                Showing up to 100 records selected for review.
+            </p>
+
+            {% if data.records and data.columns %}
+
+                <table class="threat-table">
+
+                    <thead>
+                        <tr>
+                            {% for column in data.columns %}
+                                <th>{{ column.name }}</th>
+                            {% endfor %}
+                            <th>Review Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for record in data.records %}
+                        <tr>
+
+                            {% for column in data.columns %}
+                                <td>
+                                    {{ record.get(column.key, "—") }}
+                                </td>
+                            {% endfor %}
+
+                            <td>
+                                <span class="status-pill">
+                                    Requires Review
+                                </span>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <p class="empty-message">
+                    No investigation records available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="threat-section">
+            <h2>Security Analysis Note</h2>
+
+            <p class="empty-message">
+                This module analyzes the records available in the uploaded
+                dataset. It does not perform live network monitoring.
+                Flagged records should be investigated before classifying
+                them as confirmed security incidents.
+            </p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

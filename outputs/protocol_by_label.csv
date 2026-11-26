@@ -1,0 +1,3 @@
+protocol,BENIGN,Brute Force,DoS,PortScan
+TCP,5,1,2,1
+UDP,3,0,0,0

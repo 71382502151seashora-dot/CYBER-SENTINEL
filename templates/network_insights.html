@@ -1,0 +1,433 @@
+
+{% extends "base.html" %}
+
+{% block title %}Network Insights | Cyber Sentinel{% endblock %}
+
+{% block content %}
+
+<style>
+.network-page {
+    color: #e8eefc;
+    padding: 25px;
+}
+
+.network-hero {
+    background: linear-gradient(120deg, #101d39, #123d50);
+    border: 1px solid #28617a;
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.network-hero h1 {
+    font-size: 29px;
+    margin: 0 0 10px;
+}
+
+.network-hero p {
+    color: #a9c5d6;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.network-tag {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 7px 13px;
+    border-radius: 20px;
+    background: #123e50;
+    color: #64ddff;
+    font-size: 12px;
+}
+
+.network-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.network-card {
+    background: #111c30;
+    border: 1px solid #263c5b;
+    border-radius: 15px;
+    padding: 21px;
+}
+
+.network-card p {
+    color: #9fb0ca;
+    margin: 0 0 12px;
+    font-size: 14px;
+}
+
+.network-card h2 {
+    font-size: 29px;
+    margin: 0;
+}
+
+.cyan { color: #61d8ff; }
+.green { color: #55e2a3; }
+.purple { color: #b9a1ff; }
+.yellow { color: #ffc66d; }
+
+.network-section {
+    background: #111c30;
+    border: 1px solid #263c5b;
+    border-radius: 15px;
+    padding: 22px;
+    margin-bottom: 23px;
+    overflow-x: auto;
+}
+
+.network-section h2 {
+    font-size: 19px;
+    margin: 0 0 18px;
+}
+
+.network-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 450px;
+}
+
+.network-table th {
+    background: #1a2b47;
+    color: #8edfff;
+    text-align: left;
+    padding: 13px;
+    font-size: 13px;
+}
+
+.network-table td {
+    padding: 13px;
+    border-bottom: 1px solid #253750;
+    color: #d4deee;
+    font-size: 13px;
+}
+
+.network-table tr:hover td {
+    background: #192a43;
+}
+
+.network-empty {
+    color: #9fb0ca;
+    padding: 15px 0;
+}
+
+.network-notice {
+    background: #172c48;
+    border: 1px solid #315b82;
+    color: #9bdcff;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.network-count {
+    display: inline-block;
+    background: #173c50;
+    color: #73dcff;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+@media(max-width:600px) {
+    .network-page {
+        padding: 12px;
+    }
+
+    .network-hero {
+        padding: 20px;
+    }
+
+    .network-hero h1 {
+        font-size: 23px;
+    }
+}
+</style>
+
+<div class="network-page">
+
+    <div class="network-hero">
+
+        <h1>Network Insights</h1>
+
+        <p>
+            Explore network communication patterns, source and destination
+            IP addresses, protocol distribution and network activity.
+        </p>
+
+        <span class="network-tag">
+            NETWORK INTELLIGENCE CENTER
+        </span>
+
+    </div>
+
+    {% if not data.available %}
+
+        <div class="network-notice">
+            {{ data.message }}
+        </div>
+
+    {% else %}
+
+        {% if data.is_demo %}
+            <div class="network-notice">
+                DEMO DATASET: This analysis currently uses sample
+                cybersecurity data.
+            </div>
+        {% endif %}
+
+        <!-- SUMMARY CARDS -->
+
+        <div class="network-grid">
+
+            <div class="network-card">
+                <p>Total Network Records</p>
+                <h2 class="cyan">{{ data.total }}</h2>
+            </div>
+
+            <div class="network-card">
+                <p>Unique Source IPs</p>
+                <h2 class="green">{{ data.sources|length }}</h2>
+            </div>
+
+            <div class="network-card">
+                <p>Unique Destination IPs</p>
+                <h2 class="purple">{{ data.destinations|length }}</h2>
+            </div>
+
+            <div class="network-card">
+                <p>Network Protocols</p>
+                <h2 class="yellow">{{ data.protocols|length }}</h2>
+            </div>
+
+        </div>
+
+        <!-- SOURCE IP ANALYSIS -->
+
+        <div class="network-section">
+
+            <h2>Top Source IP Addresses</h2>
+
+            {% if data.sources %}
+
+                <table class="network-table">
+
+                    <thead>
+                        <tr>
+                            <th>Source IP Address</th>
+                            <th>Communication Records</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in data.sources %}
+                        <tr>
+                            <td>{{ item.ip }}</td>
+                            <td>
+                                <span class="network-count">
+                                    {{ item.count }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <p class="network-empty">
+                    Source IP information is unavailable.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- DESTINATION IP ANALYSIS -->
+
+        <div class="network-section">
+
+            <h2>Top Destination IP Addresses</h2>
+
+            {% if data.destinations %}
+
+                <table class="network-table">
+
+                    <thead>
+                        <tr>
+                            <th>Destination IP Address</th>
+                            <th>Communication Records</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in data.destinations %}
+                        <tr>
+                            <td>{{ item.ip }}</td>
+                            <td>
+                                <span class="network-count">
+                                    {{ item.count }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <p class="network-empty">
+                    Destination IP information is unavailable.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- PROTOCOL DISTRIBUTION -->
+
+        <div class="network-section">
+
+            <h2>Network Protocol Distribution</h2>
+
+            {% if data.protocols %}
+
+                <table class="network-table">
+
+                    <thead>
+                        <tr>
+                            <th>Protocol</th>
+                            <th>Record Count</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in data.protocols %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <p class="network-empty">
+                    Protocol information is unavailable.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- NETWORK COMMUNICATION RECORDS -->
+
+        <div class="network-section">
+
+            <h2>Network Communication Records</h2>
+
+            <p class="network-empty">
+                Showing up to 100 records from the selected dataset.
+            </p>
+
+            {% if data.records %}
+
+                <table class="network-table">
+
+                    <thead>
+                        <tr>
+                            {% if data.records[0].get('source_ip') is not none %}
+                                <th>Source IP</th>
+                            {% endif %}
+
+                            {% if data.records[0].get('destination_ip') is not none %}
+                                <th>Destination IP</th>
+                            {% endif %}
+
+                            {% if data.records[0].get('source_port') is not none %}
+                                <th>Source Port</th>
+                            {% endif %}
+
+                            {% if data.records[0].get('destination_port') is not none %}
+                                <th>Destination Port</th>
+                            {% endif %}
+
+                            {% if data.records[0].get('protocol') is not none %}
+                                <th>Protocol</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for record in data.records %}
+
+                        <tr>
+
+                            {% if record.get('source_ip') is not none %}
+                                <td>{{ record.source_ip }}</td>
+                            {% endif %}
+
+                            {% if record.get('destination_ip') is not none %}
+                                <td>{{ record.destination_ip }}</td>
+                            {% endif %}
+
+                            {% if record.get('source_port') is not none %}
+                                <td>{{ record.source_port }}</td>
+                            {% endif %}
+
+                            {% if record.get('destination_port') is not none %}
+                                <td>{{ record.destination_port }}</td>
+                            {% endif %}
+
+                            {% if record.get('protocol') is not none %}
+                                <td>{{ record.protocol }}</td>
+                            {% endif %}
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <p class="network-empty">
+                    No network communication records available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- ANALYSIS INFORMATION -->
+
+        <div class="network-section">
+
+            <h2>Network Analysis Information</h2>
+
+            <p class="network-empty">
+                This module summarizes communication records from your
+                uploaded dataset. IP frequency does not by itself indicate
+                malicious activity. This page does not perform live
+                network packet capture or monitoring.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

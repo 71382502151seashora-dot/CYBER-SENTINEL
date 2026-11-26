@@ -1,0 +1,11 @@
+[
+    {
+        "id": 1,
+        "title": "suspicious network traffic detected",
+        "description": "Unusual network traffic has been detected in the system. Multiple suspicious connection attempts were identified, which may indicate a possible cyber attack. The security team needs to investigate the activity, identify the source, analyze potential risks, and take necessary actions to prevent unauthorized access and protect system data.",
+        "severity": "High",
+        "status": "Open",
+        "reported_by": "cibiraj31122009@gmail.com",
+        "created_at": "25-11-2026 10:58 AM"
+    }
+]

@@ -1,0 +1,387 @@
+
+{% extends "base.html" %}
+{% block title %}Command Center | Cyber Sentinel{% endblock %}
+{% block heading %}Command Center{% endblock %}
+
+{% block content %}
+
+<style>
+.sentinel-dashboard {
+    color: #e5f3ff;
+}
+.sentinel-dashboard * { box-sizing: border-box; }
+
+.sentinel-hero {
+    position: relative;
+    min-height: 310px;
+    padding: 30px;
+    border: 1px solid #17466a;
+    border-radius: 20px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+    background:
+      radial-gradient(circle at 75% 50%,#123e64 0%,transparent 38%),
+      linear-gradient(120deg,#071425,#0b2038 60%,#06101f);
+    box-shadow: 0 15px 45px #0005;
+}
+.sentinel-hero h1 {
+    font-size: clamp(28px,4vw,43px);
+    margin: 12px 0;
+    color: white;
+}
+.sentinel-hero h1 span { color: #15dafa; }
+.sentinel-hero p { color: #a8bfd5; line-height: 1.7; }
+.sentinel-eyebrow {
+    color: #16dafa;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+.sentinel-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 14px;
+    border: 1px solid #1c6681;
+    border-radius: 30px;
+    background: #092b3a;
+    color: #8ff5e8;
+    font-size: 12px;
+}
+.sentinel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #25e5bd;
+    box-shadow: 0 0 12px #25e5bd;
+}
+.sentinel-globe-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 260px;
+    perspective: 900px;
+}
+.sentinel-globe {
+    width: 205px;
+    height: 205px;
+    position: relative;
+    border-radius: 50%;
+    transform-style: preserve-3d;
+    background:
+      radial-gradient(circle at 32% 28%,#55eaff 0%,#0876a4 8%,#07375e 35%,#031326 72%);
+    box-shadow:
+      inset -25px -15px 45px #000b,
+      inset 10px 5px 30px #5eeeff66,
+      0 0 35px #0bcfff55;
+    animation: sentinel-rotate 14s linear infinite;
+}
+.sentinel-globe:before,
+.sentinel-globe:after {
+    content: "";
+    position: absolute;
+    inset: 12px -15px;
+    border: 1px solid #3bdfff99;
+    border-radius: 50%;
+    transform: rotateY(65deg);
+}
+.sentinel-globe:after {
+    inset: 0 -28px;
+    transform: rotateY(-65deg);
+    border-color: #18a9d877;
+}
+.sentinel-globe-grid {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    background:
+      repeating-linear-gradient(0deg,transparent 0 25px,#52e5ff25 26px 27px),
+      repeating-linear-gradient(90deg,transparent 0 25px,#52e5ff25 26px 27px);
+    mask-image: radial-gradient(circle,#000 65%,transparent 70%);
+}
+.sentinel-orbit {
+    position: absolute;
+    width: 255px;
+    height: 255px;
+    border: 1px solid #17dafa66;
+    border-radius: 50%;
+    transform: rotateX(70deg);
+    animation: sentinel-orbit 9s linear infinite;
+}
+.sentinel-orbit:after {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #20f4ff;
+    box-shadow: 0 0 18px #20f4ff;
+}
+@keyframes sentinel-rotate {
+    to { transform: rotateY(360deg); }
+}
+@keyframes sentinel-orbit {
+    to { transform: rotateX(70deg) rotateZ(360deg); }
+}
+
+.sentinel-stats {
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 16px;
+    margin: 22px 0;
+}
+.sentinel-stat {
+    position: relative;
+    overflow: hidden;
+    padding: 21px;
+    border-radius: 15px;
+    border: 1px solid #203c59;
+    background: linear-gradient(145deg,#10243a,#091626);
+    box-shadow: 0 10px 25px #0003;
+    transition: .25s;
+}
+.sentinel-stat:hover {
+    transform: translateY(-5px);
+    border-color: #16dafa;
+    box-shadow: 0 10px 30px #06bde522;
+}
+.sentinel-stat-label {
+    color: #9db5ca;
+    font-size: 13px;
+}
+.sentinel-stat-number {
+    display: block;
+    font-size: clamp(23px,3vw,32px);
+    font-weight: 800;
+    color: #fff;
+    margin: 15px 0 7px;
+}
+.sentinel-stat small { color: #7897b1; }
+.sentinel-stat-icon {
+    float: right;
+    font-size: 23px;
+    color: #17dafa;
+}
+.sentinel-content {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+.sentinel-panel {
+    padding: 22px;
+    border: 1px solid #203c59;
+    border-radius: 16px;
+    background: linear-gradient(145deg,#102239,#091625);
+    box-shadow: 0 10px 25px #0003;
+}
+.sentinel-panel h3 {
+    color: white;
+    margin: 7px 0 20px;
+}
+.sentinel-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.sentinel-panel a {
+    color: #20dafa;
+    text-decoration: none;
+    font-size: 13px;
+}
+.sentinel-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 9px;
+    margin: 17px 0;
+    color: #b8cce0;
+    font-size: 13px;
+}
+.sentinel-row strong { color: white; }
+.sentinel-bar {
+    grid-column: 1 / -1;
+    height: 7px;
+    background: #1b344b;
+    border-radius: 20px;
+    overflow: hidden;
+}
+.sentinel-bar i {
+    display: block;
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg,#087ba9,#19e3ee);
+    box-shadow: 0 0 12px #12dafa88;
+}
+.sentinel-protocol {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #20384d;
+    color: #b8cce0;
+    font-size: 13px;
+}
+.sentinel-protocol strong { color: #fff; }
+.sentinel-note {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    padding: 18px;
+    border: 1px solid #28516b;
+    border-radius: 13px;
+    background: #0b2638;
+    color: #b7d2e4;
+    font-size: 13px;
+    line-height: 1.7;
+}
+.sentinel-note strong { color: #20dafa; }
+.sentinel-notice {
+    padding: 17px;
+    margin: 16px 0;
+    border: 1px solid #8b6a32;
+    border-radius: 12px;
+    background: #302515;
+    color: #f5dca8;
+}
+.sentinel-notice p { margin-bottom: 0; }
+
+@media(max-width:900px) {
+    .sentinel-stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .sentinel-content { grid-template-columns: 1fr; }
+}
+@media(max-width:600px) {
+    .sentinel-hero { grid-template-columns: 1fr; }
+    .sentinel-globe-area { min-height: 220px; }
+    .sentinel-stats { grid-template-columns: 1fr 1fr; gap: 9px; }
+    .sentinel-stat { padding: 14px; }
+}
+</style>
+
+<div class="sentinel-dashboard">
+
+<section class="sentinel-hero">
+    <div>
+        <div class="sentinel-status">
+            <span class="sentinel-dot"></span>
+            SECURITY COMMAND CENTER
+        </div>
+        <p class="sentinel-eyebrow" style="margin-top:22px">
+            ENTERPRISE THREAT ANALYSIS PLATFORM
+        </p>
+        <h1>Welcome, {{ session.name.split(' ')[0] }}.<br>
+        <span>Stay ahead of threats.</span></h1>
+        <p>Explore network traffic, inspect security indicators and understand your dataset through one command center.</p>
+        <div class="sentinel-status">{{ session.role|upper }} ACCESS</div>
+    </div>
+    <div class="sentinel-globe-area">
+        <div class="sentinel-orbit"></div>
+        <div class="sentinel-globe">
+            <div class="sentinel-globe-grid"></div>
+        </div>
+    </div>
+</section>
+
+{% if data.is_demo %}
+<div class="sentinel-notice">
+    <strong>DEMO DATASET</strong>
+    <p>Sample data is displayed for interface testing. For actual project analysis, save the CICIDS2017 CSV as Dataset/cybersecurity_data.csv.</p>
+</div>
+{% endif %}
+
+{% if not data.available %}
+<div class="sentinel-notice">
+    <strong>DATASET REQUIRED</strong>
+    <p>{{ data.message }}</p>
+    <small>Use CICIDS2017 and save the CSV as Dataset/cybersecurity_data.csv.</small>
+</div>
+{% else %}
+
+<section class="sentinel-stats">
+    <div class="sentinel-stat">
+        <span class="sentinel-stat-icon">▦</span>
+        <div class="sentinel-stat-label">Total Traffic Records</div>
+        <strong class="sentinel-stat-number">{{ "{:,}".format(data.rows) }}</strong>
+        <small>After duplicate removal</small>
+    </div>
+    <div class="sentinel-stat">
+        <span class="sentinel-stat-icon">✓</span>
+        <div class="sentinel-stat-label">Normal / Benign</div>
+        <strong class="sentinel-stat-number">{{ "{:,}".format(data.normal) }}</strong>
+        <small>Based on available labels / rules</small>
+    </div>
+    <div class="sentinel-stat">
+        <span class="sentinel-stat-icon">⌁</span>
+        <div class="sentinel-stat-label">Threat / Review Records</div>
+        <strong class="sentinel-stat-number">{{ "{:,}".format(data.flagged) }}</strong>
+        <small>
+        {% if data.labels and data.labels[0].name == 'Rule flagged for review' %}
+        Rule indicators only
+        {% else %}
+        Non-normal labelled records
+        {% endif %}
+        </small>
+    </div>
+    <div class="sentinel-stat">
+        <span class="sentinel-stat-icon">▤</span>
+        <div class="sentinel-stat-label">Dataset Columns</div>
+        <strong class="sentinel-stat-number">{{ data.columns }}</strong>
+        <small>Available data fields</small>
+    </div>
+</section>
+
+<section class="sentinel-content">
+    <div class="sentinel-panel">
+        <div class="sentinel-panel-head">
+            <div>
+                <p class="sentinel-eyebrow">TRAFFIC INTELLIGENCE</p>
+                <h3>Threat Label Distribution</h3>
+            </div>
+            <a href="{{ url_for('graphs') }}">View Graphs →</a>
+        </div>
+        {% if data.labels %}
+            {% for item in data.labels %}
+            <div class="sentinel-row">
+                <span>{{ item.name }}</span>
+                <strong>{{ "{:,}".format(item.count) }}</strong>
+                <div class="sentinel-bar">
+                    <i style="width: {{ (item.count / data.rows * 100) if data.rows else 0 }}%"></i>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No label summary is available.</p>
+        {% endif %}
+    </div>
+
+    <div class="sentinel-panel">
+        <p class="sentinel-eyebrow">NETWORK INTELLIGENCE</p>
+        <h3>Protocol Distribution</h3>
+        {% if data.protocols %}
+            {% for item in data.protocols %}
+            <div class="sentinel-protocol">
+                <span>{{ item.name }}</span>
+                <strong>{{ "{:,}".format(item.count) }}</strong>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Protocol field not found.</p>
+        {% endif %}
+    </div>
+</section>
+
+<div class="sentinel-note">
+    <span style="font-size:24px;color:#20dafa">ⓘ</span>
+    <div>
+        <strong>SECURITY ANALYSIS NOTE</strong>
+        <p>Suspicious indicators are not proof of malicious activity. Interpret results using dataset labels and the analysis summary. The globe animation is a visual interface element, not a live network monitor.</p>
+    </div>
+</div>
+
+{% endif %}
+</div>
+{% endblock %}

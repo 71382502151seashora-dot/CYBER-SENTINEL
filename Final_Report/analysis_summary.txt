@@ -1,0 +1,85 @@
+CYBERSECURITY THREAT DETECTION AND ANALYSIS USING PYTHON
+==========================================================
+Dataset: demo_cybersecurity_data.csv
+Rows after duplicate removal: 12
+Columns: 10
+Duplicate rows removed: 0
+Missing values (all cells): 0
+
+AVAILABLE FIELD MAPPING
+{'source_ip': 'Source IP', 'destination_ip': 'Destination IP', 'source_port': 'Source Port', 'destination_port': 'Destination Port', 'protocol': 'Protocol', 'timestamp': 'Timestamp', 'packet_count': 'Packet Count', 'flow_duration': 'Flow Duration', 'byte_count': 'Byte Count', 'label': 'Label'}
+
+Protocol distribution:
+Protocol
+TCP    9
+UDP    3
+
+Top source IP addresses:
+Source IP
+192.168.1.10    2
+192.168.1.11    1
+192.168.1.12    1
+192.168.1.13    1
+192.168.1.14    1
+192.168.1.15    1
+192.168.1.16    1
+192.168.1.17    1
+192.168.1.18    1
+192.168.1.19    1
+
+Top destination ports:
+Destination Port
+80      3
+443     2
+53      2
+8080    2
+22      1
+3389    1
+123     1
+
+Traffic volume column: Byte Count
+count        12.000000
+mean      84750.000000
+std      110950.541807
+min        3000.000000
+25%        8500.000000
+50%       18000.000000
+75%      185000.000000
+max      300000.000000
+
+Existing dataset labels (not invented):
+Label
+BENIGN         8
+DoS            2
+PortScan       1
+Brute Force    1
+Normal/Benign records: 8
+Other labelled records: 4
+
+Protocol by label:
+label     BENIGN  Brute Force  DoS  PortScan
+protocol                                    
+TCP            5            1    2         1
+UDP            3            0    0         0
+
+Destination port by label (top ports):
+port
+80      3
+53      2
+443     2
+8080    2
+22      1
+123     1
+3389    1
+
+Source IPs with most non-normal labelled records:
+Source IP
+192.168.1.10    1
+192.168.1.14    1
+192.168.1.17    1
+192.168.1.20    1
+
+INTERPRETATION CAUTION
+High traffic volume, unusual ports, or rule flags are indicators for further investigation,
+not proof that an IP address or activity is malicious.
+Dataset labels, when present, are reported as supplied by the dataset.

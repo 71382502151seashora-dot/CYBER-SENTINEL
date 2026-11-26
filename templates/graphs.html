@@ -1,0 +1,407 @@
+
+{% extends "base.html" %}
+
+{% block title %}Advanced Analytics | Cyber Sentinel{% endblock %}
+{% block heading %}Advanced Analytics{% endblock %}
+
+{% block content %}
+
+<div class="analytics-page">
+
+    <style>
+        .analytics-page {
+            color: #e8f3ff;
+            padding: 10px 0 30px;
+        }
+
+        .analytics-hero {
+            background: linear-gradient(120deg, #101f38, #102d42, #102039);
+            border: 1px solid rgba(0,220,255,.25);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 35px rgba(0,0,0,.25);
+        }
+
+        .analytics-hero h1 {
+            font-size: 27px;
+            margin: 0 0 10px;
+            color: #ffffff;
+        }
+
+        .analytics-hero p {
+            color: #9eb6ca;
+            margin: 0;
+        }
+
+        .analytics-tag {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 7px 13px;
+            border-radius: 20px;
+            background: rgba(0,220,255,.10);
+            color: #32ddff;
+            border: 1px solid rgba(0,220,255,.25);
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .analytics-section-title {
+            font-size: 18px;
+            margin: 28px 0 15px;
+            color: #ffffff;
+        }
+
+        .analytics-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .analytics-stat {
+            background: linear-gradient(145deg, #14263d, #101c30);
+            border: 1px solid rgba(75,190,255,.16);
+            border-radius: 15px;
+            padding: 20px;
+            transition: .25s;
+        }
+
+        .analytics-stat:hover {
+            transform: translateY(-5px);
+            border-color: #13cfff;
+            box-shadow: 0 8px 25px rgba(0,190,255,.12);
+        }
+
+        .analytics-stat span {
+            color: #91a9c1;
+            font-size: 12px;
+        }
+
+        .analytics-stat h2 {
+            color: #32dfff;
+            font-size: 25px;
+            margin: 12px 0 5px;
+        }
+
+        .analytics-stat small {
+            color: #8198ae;
+        }
+
+        .analytics-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            margin: 18px 0;
+        }
+
+        .analytics-search {
+            flex: 1;
+            min-width: 200px;
+            max-width: 400px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: #101e32;
+            border: 1px solid #29445e;
+            color: white;
+            outline: none;
+        }
+
+        .analytics-search:focus {
+            border-color: #19d7ff;
+        }
+
+        .analytics-btn {
+            padding: 11px 16px;
+            border-radius: 9px;
+            border: 1px solid #1bbfe8;
+            background: rgba(0,190,230,.10);
+            color: #42ddff;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .analytics-btn:hover {
+            background: #0c8eae;
+            color: white;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .analytics-chart {
+            background: linear-gradient(145deg, #14263c, #0d192b);
+            border: 1px solid rgba(75,190,255,.17);
+            border-radius: 15px;
+            padding: 17px;
+            min-width: 0;
+            transition: .25s;
+        }
+
+        .analytics-chart:hover {
+            border-color: rgba(0,210,255,.65);
+            box-shadow: 0 8px 25px rgba(0,170,255,.10);
+        }
+
+        .analytics-chart h3 {
+            color: #e7f5ff;
+            font-size: 15px;
+            margin: 0 0 14px;
+        }
+
+        .analytics-chart img {
+            width: 100%;
+            height: auto;
+            max-height: 360px;
+            object-fit: contain;
+            border-radius: 9px;
+            background: #ffffff;
+            cursor: zoom-in;
+        }
+
+        .analytics-chart p {
+            color: #8fa9c1;
+            font-size: 12px;
+            margin: 13px 0 0;
+        }
+
+        .analytics-empty {
+            padding: 25px;
+            border-radius: 13px;
+            background: #14263c;
+            border: 1px solid #29445e;
+            color: #b4c9dc;
+            text-align: center;
+        }
+
+        .analytics-notice {
+            padding: 15px 18px;
+            border-radius: 11px;
+            background: rgba(255,180,60,.08);
+            border: 1px solid rgba(255,180,60,.3);
+            color: #ffd18a;
+            margin-bottom: 20px;
+        }
+
+        .analytics-footer {
+            margin-top: 25px;
+            padding: 17px;
+            border-radius: 12px;
+            background: #101e32;
+            border: 1px solid #253d55;
+            color: #8fa9c1;
+            font-size: 12px;
+        }
+
+        .analytics-modal {
+            display: none;
+            position: fixed;
+            z-index: 99999;
+            inset: 0;
+            background: rgba(0,0,0,.94);
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .analytics-modal img {
+            max-width: 95%;
+            max-height: 90vh;
+            object-fit: contain;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .analytics-modal button {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #102d42;
+            color: white;
+            border: 1px solid #20d9ff;
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+        }
+
+        @media(max-width:600px) {
+            .analytics-hero { padding: 20px; }
+            .analytics-hero h1 { font-size: 21px; }
+            .analytics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <!-- HERO -->
+    <section class="analytics-hero">
+        <h1>ADVANCED SECURITY ANALYTICS</h1>
+        <p>
+            Explore cybersecurity traffic patterns, network behaviour
+            and threat distribution through dataset-based visual analysis.
+        </p>
+        <div class="analytics-tag">
+            CYBER SENTINEL / ANALYTICS ENGINE
+        </div>
+    </section>
+
+    <!-- DEMO NOTICE -->
+    {% if data.is_demo %}
+    <div class="analytics-notice">
+        <strong>DEMO DATASET</strong><br>
+        These visualizations are generated from sample records.
+        They do not represent live network monitoring or real-time attacks.
+    </div>
+    {% endif %}
+
+    <!-- OVERVIEW -->
+    <h2 class="analytics-section-title">Security Analytics Overview</h2>
+
+    <div class="analytics-overview">
+
+        <div class="analytics-stat">
+            <span>AVAILABLE STATUS</span>
+            <h2>{{ "READY" if data.available else "N/A" }}</h2>
+            <small>Dataset analysis</small>
+        </div>
+
+        <div class="analytics-stat">
+            <span>GENERATED CHARTS</span>
+            <h2>{{ data.graphs|length if data.available and data.graphs else 0 }}</h2>
+            <small>Visual reports</small>
+        </div>
+
+        <div class="analytics-stat">
+            <span>ANALYSIS MODE</span>
+            <h2>CSV</h2>
+            <small>Dataset-based analysis</small>
+        </div>
+
+        <div class="analytics-stat">
+            <span>VISUAL ENGINE</span>
+            <h2>ACTIVE</h2>
+            <small>Chart display system</small>
+        </div>
+
+    </div>
+
+    <!-- CHARTS -->
+    <h2 class="analytics-section-title">Network & Threat Visualizations</h2>
+
+    <div class="analytics-toolbar">
+        <input
+            type="text"
+            id="chartSearch"
+            class="analytics-search"
+            placeholder="Search analytics charts..."
+            onkeyup="filterAnalyticsCharts()"
+        >
+
+        <button class="analytics-btn" onclick="resetAnalyticsSearch()">
+            Reset Filter
+        </button>
+    </div>
+
+    {% if not data.available %}
+
+        <div class="analytics-empty">
+            <h3>Dataset Not Available</h3>
+            <p>{{ data.message }}</p>
+        </div>
+
+    {% elif data.graphs %}
+
+        <div class="analytics-grid" id="analyticsGrid">
+
+            {% for graph in data.graphs %}
+
+            <div class="analytics-chart" data-chart-name="{{ graph.replace('_',' ').replace('.png','').lower() }}">
+
+                <h3>
+                    {{ graph.replace('_',' ').replace('.png','').title() }}
+                </h3>
+
+                <img
+                    src="{{ url_for('graph_file', filename=graph) }}"
+                    alt="{{ graph }}"
+                    loading="lazy"
+                    onclick="openAnalyticsImage(this)"
+                >
+
+                <p>
+                    Dataset-based visualization |
+                    Click image to enlarge
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="analytics-empty">
+            <h3>No Visualizations Available</h3>
+            <p>
+                Charts could not be generated.
+                Please check whether the selected dataset contains the required fields.
+            </p>
+        </div>
+
+    {% endif %}
+
+    <!-- FOOTER -->
+    <div class="analytics-footer">
+        <strong>ANALYSIS INFORMATION</strong><br><br>
+        All charts are generated using the selected CSV dataset and
+        the existing Python analysis engine. Results depend on the
+        available dataset fields. This page does not perform live
+        network monitoring.
+    </div>
+
+</div>
+
+<!-- IMAGE FULLSCREEN -->
+<div class="analytics-modal" id="analyticsModal" onclick="closeAnalyticsImage()">
+    <button type="button" onclick="closeAnalyticsImage()">CLOSE ✕</button>
+    <img id="analyticsModalImage" src="" alt="Enlarged analytics chart">
+</div>
+
+<script>
+    function filterAnalyticsCharts() {
+        const search = document.getElementById("chartSearch").value.toLowerCase();
+        const charts = document.querySelectorAll(".analytics-chart");
+
+        charts.forEach(chart => {
+            const name = chart.getAttribute("data-chart-name") || "";
+            chart.style.display = name.includes(search) ? "" : "none";
+        });
+    }
+
+    function resetAnalyticsSearch() {
+        document.getElementById("chartSearch").value = "";
+        filterAnalyticsCharts();
+    }
+
+    function openAnalyticsImage(image) {
+        const modal = document.getElementById("analyticsModal");
+        document.getElementById("analyticsModalImage").src = image.src;
+        modal.style.display = "flex";
+    }
+
+    function closeAnalyticsImage() {
+        document.getElementById("analyticsModal").style.display = "none";
+    }
+
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape") {
+            closeAnalyticsImage();
+        }
+    });
+</script>
+
+{% endblock %}

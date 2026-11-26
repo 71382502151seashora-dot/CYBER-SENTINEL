@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{% block title %}Cyber Sentinel{% endblock %}</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+.app-body {
+    margin: 0;
+    min-height: 100vh;
+    background: #050d19 !important;
+    color: #e5f4ff;
+    display: flex;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 16px;
+    background: linear-gradient(180deg,#0d2035,#071321 75%,#050d19);
+    border-right: 1px solid #16415c;
+    box-shadow: 8px 0 35px #0007;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.side-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 8px 25px;
+    color: white;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+}
+
+.brand-icon {
+    color: #19dcfa;
+    font-size: 30px;
+    text-shadow: 0 0 15px #19dcfa;
+}
+
+.side-brand em {
+    color: #19dcfa;
+    font-style: normal;
+}
+
+.side-label {
+    padding: 10px;
+    color: #668ba9;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar nav a,
+.logout-link {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 12px;
+    border-radius: 10px;
+    color: #9db7ce;
+    text-decoration: none;
+    font-size: 13px;
+    border: 1px solid transparent;
+    transition: all .25s ease;
+}
+
+.sidebar nav a:hover,
+.logout-link:hover {
+    color: #20e0fa;
+    background: #12304a;
+    border-color: #176080;
+    transform: translateX(4px);
+}
+
+.sidebar nav a.active {
+    color: #21e1fa;
+    background: linear-gradient(100deg,#103a55,#10283e);
+    border: 1px solid #167a9d;
+    box-shadow: inset 3px 0 #18dafa;
+}
+
+.nav-icon {
+    width: 18px;
+    text-align: center;
+    font-size: 17px;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    border-top: 1px solid #1b3b54;
+    padding-top: 15px;
+}
+
+.profile-mini {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 5px 15px;
+    min-width: 0;
+}
+
+.profile-mini strong {
+    display: block;
+    color: #e9f8ff;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.profile-mini small {
+    display: block;
+    margin-top: 5px;
+    color: #19dafa;
+    font-size: 11px;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg,#087da8,#18dafa);
+    color: #00121d;
+    font-weight: 900;
+}
+
+.logout-link {
+    color: #ff9b9b;
+}
+
+.main-area {
+    width: calc(100% - 250px);
+    min-width: 0;
+    min-height: 100vh;
+    margin-left: 250px;
+    padding: 25px 30px;
+    box-sizing: border-box;
+    background:
+      radial-gradient(ellipse at 75% 0%,#10243a66,transparent 45%),
+      #050d19;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 28px;
+    padding: 15px 20px;
+    border: 1px solid #1c3c57;
+    border-radius: 14px;
+    background: linear-gradient(120deg,#102238,#0a1727);
+}
+
+.topbar .eyebrow {
+    color: #17dafa;
+    font-size: 10px;
+    letter-spacing: 3px;
+    font-weight: bold;
+    margin: 0 0 7px;
+}
+
+.topbar h2 {
+    margin: 0;
+    color: white;
+    font-size: 22px;
+}
+
+.top-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #9bb6ce;
+    font-size: 12px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22e6b8;
+    box-shadow: 0 0 12px #22e6b8;
+}
+
+.avatar.small {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    font-size: 13px;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 35px;
+    padding: 18px 5px;
+    border-top: 1px solid #19334a;
+    color: #7896ae;
+    font-size: 12px;
+}
+
+.main-area > * {
+    max-width: 100%;
+}
+
+/* TABLET */
+@media(max-width:850px) {
+    .sidebar {
+        width: 190px;
+        min-width: 190px;
+    }
+
+    .main-area {
+        width: calc(100% - 190px);
+        margin-left: 190px;
+        padding: 18px;
+    }
+
+    .side-brand {
+        font-size: 16px;
+    }
+}
+
+/* MOBILE */
+@media(max-width:600px) {
+    .app-body {
+        display: block;
+    }
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-width: 0;
+        min-height: auto;
+        padding: 12px;
+    }
+
+    .side-brand {
+        padding: 5px 8px 15px;
+    }
+
+    .sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .sidebar nav a {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .sidebar-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+
+    .profile-mini {
+        padding: 5px;
+    }
+
+    .main-area {
+        width: 100%;
+        margin-left: 0;
+        padding: 13px;
+    }
+
+    .topbar {
+        padding: 13px;
+    }
+
+    .top-user {
+        font-size: 0;
+    }
+
+    .footer {
+        flex-wrap: wrap;
+    }
+}
+</style>
+</head>
+
+<body class="app-body">
+
+<aside class="sidebar">
+
+<a class="side-brand" href="{{ url_for('dashboard') }}">
+    <span class="brand-icon">⬡</span>
+    <span>CYBER<em>SENTINEL</em></span>
+</a>
+
+<div class="side-label">WORKSPACE</div>
+
+<nav>
+
+    <a class="{{ 'active' if request.endpoint == 'dashboard' else '' }}"
+       href="{{ url_for('dashboard') }}">
+       <span class="nav-icon">▦</span>
+       <span>Command Center</span>
+    </a>
+
+    <a class="{{ 'active' if request.endpoint == 'graphs' else '' }}"
+       href="{{ url_for('graphs') }}">
+       <span class="nav-icon">▥</span>
+       <span>Analytics & Graphs</span>
+    </a>
+
+    <a class="{{ 'active' if request.endpoint == 'analytics_3d' else '' }}"
+       href="{{ url_for('analytics_3d') }}">
+       <span class="nav-icon">◈</span>
+       <span>3D Analytics</span>
+    </a>
+
+    <a class="{{ 'active' if request.path == '/threat-detection' else '' }}"
+       href="{{ url_for('threat_detection') }}">
+       <span class="nav-icon">⚠</span>
+       <span>Threat Detection</span>
+    </a>
+
+    <a class="{{ 'active' if request.path == '/network-insights' else '' }}"
+       href="{{ url_for('network_insights') }}">
+       <span class="nav-icon">◎</span>
+       <span>Network Insights</span>
+    </a>
+
+    <a class="{{ 'active' if request.path == '/security-reports' else '' }}"
+       href="{{ url_for('security_reports') }}">
+       <span class="nav-icon">▤</span>
+       <span>Security Reports</span>
+    </a>
+
+    <a class="{{ 'active' if request.path == '/event-timeline' else '' }}"
+       href="{{ url_for('event_timeline') }}">
+       <span class="nav-icon">◷</span>
+       <span>Event Timeline</span>
+    </a>
+
+    <a class="{{ 'active' if request.path == '/incident-management' else '' }}"
+       href="{{ url_for('incident_management') }}">
+       <span class="nav-icon">🚨</span>
+       <span>Incident Management</span>
+    </a>
+
+    <a class="{{ 'active' if request.path == '/security-alerts' else '' }}"
+       href="{{ url_for('security_alerts') }}">
+       <span class="nav-icon">🔔</span>
+       <span>Security Alert Center</span>
+    </a>
+
+    {% if session.get('role') == 'admin' %}
+
+    <a class="{{ 'active' if request.endpoint == 'report' else '' }}"
+       href="{{ url_for('report') }}">
+       <span class="nav-icon">▧</span>
+       <span>Analysis Report</span>
+    </a>
+
+    <a class="{{ 'active' if request.path == '/admin-control' else '' }}"
+       href="{{ url_for('admin_control') }}">
+       <span class="nav-icon">⚙</span>
+       <span>Admin Control Panel</span>
+    </a>
+
+    <!-- USER ACTIVITY LOGS -->
+    <a class="{{ 'active' if request.endpoint == 'activity_logs' else '' }}"
+       href="{{ url_for('activity_logs') }}">
+       <span class="nav-icon">◷</span>
+       <span>User Activity Logs</span>
+    </a>
+
+    {% endif %}
+
+</nav>
+
+<div class="sidebar-bottom">
+
+    <div class="profile-mini">
+        <div class="avatar">{{ session.get('name', 'U')[0]|upper }}</div>
+        <div>
+            <strong>{{ session.get('name', 'User') }}</strong>
+            <small>{{ session.get('role', 'user')|capitalize }} Access</small>
+        </div>
+    </div>
+
+    <a class="logout-link" href="{{ url_for('logout') }}">
+        ↪ <span>Logout</span>
+    </a>
+
+</div>
+</aside>
+
+<main class="main-area">
+
+<header class="topbar">
+    <div>
+        <p class="eyebrow">CYBER SENTINEL / SECURITY OPERATIONS</p>
+        <h2>{% block heading %}Command Center{% endblock %}</h2>
+    </div>
+
+    <div class="top-user">
+        <span class="status-dot"></span>
+        System Workspace
+        <div class="avatar small">{{ session.get('name', 'U')[0]|upper }}</div>
+    </div>
+</header>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% for category, message in messages %}
+<div class="alert {{ category }}">{{ message }}</div>
+{% endfor %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+<footer class="footer">
+    <span>CYBER SENTINEL</span>
+    <span>Python · Flask · Pandas · Security Analytics</span>
+</footer>
+
+</main>
+</body>
+</html>

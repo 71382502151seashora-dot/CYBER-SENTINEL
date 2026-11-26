@@ -1,0 +1,339 @@
+
+{% extends "base.html" %}
+
+{% block title %}Security Event Timeline | Cyber Sentinel{% endblock %}
+
+{% block content %}
+
+<style>
+.timeline-page {
+    padding: 25px;
+    color: #e8eefc;
+}
+
+.timeline-hero {
+    background: linear-gradient(120deg, #102c3d, #183d52);
+    border: 1px solid #28617a;
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.timeline-hero h1 {
+    font-size: 28px;
+    margin: 0 0 10px;
+}
+
+.timeline-hero p {
+    color: #a9c5d6;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.timeline-tag {
+    display: inline-block;
+    background: #153e50;
+    color: #69ddff;
+    padding: 7px 13px;
+    border-radius: 20px;
+    margin-top: 15px;
+    font-size: 12px;
+}
+
+.timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.timeline-card {
+    background: #111c30;
+    border: 1px solid #263c5b;
+    border-radius: 15px;
+    padding: 22px;
+}
+
+.timeline-card p {
+    color: #9fb0ca;
+    margin: 0 0 12px;
+    font-size: 14px;
+}
+
+.timeline-card h2 {
+    font-size: 29px;
+    margin: 0;
+}
+
+.cyan { color: #61d8ff; }
+.green { color: #55e2a3; }
+.purple { color: #b9a1ff; }
+
+.timeline-section {
+    background: #111c30;
+    border: 1px solid #263c5b;
+    border-radius: 15px;
+    padding: 22px;
+    margin-bottom: 23px;
+    overflow-x: auto;
+}
+
+.timeline-section h2 {
+    font-size: 19px;
+    margin: 0 0 18px;
+}
+
+.timeline-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 550px;
+}
+
+.timeline-table th {
+    background: #1a2b47;
+    color: #8edfff;
+    text-align: left;
+    padding: 13px;
+    font-size: 13px;
+}
+
+.timeline-table td {
+    padding: 13px;
+    border-bottom: 1px solid #253750;
+    color: #d4deee;
+    font-size: 13px;
+}
+
+.timeline-table tr:hover td {
+    background: #192a43;
+}
+
+.timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    background: #172740;
+    border: 1px solid #2b4565;
+    border-radius: 12px;
+}
+
+.timeline-dot {
+    width: 11px;
+    height: 11px;
+    min-width: 11px;
+    border-radius: 50%;
+    background: #58d6ff;
+    margin-top: 5px;
+}
+
+.timeline-item strong {
+    color: #8edfff;
+    font-size: 14px;
+}
+
+.timeline-item p {
+    color: #bdc9dc;
+    font-size: 13px;
+    margin: 6px 0 0;
+}
+
+.timeline-notice {
+    background: #172c48;
+    border: 1px solid #315b82;
+    color: #9bdcff;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.timeline-empty {
+    color: #9fb0ca;
+    padding: 15px 0;
+}
+
+@media(max-width:600px) {
+    .timeline-page { padding: 12px; }
+    .timeline-hero { padding: 20px; }
+    .timeline-hero h1 { font-size: 23px; }
+}
+</style>
+
+<div class="timeline-page">
+
+    <div class="timeline-hero">
+
+        <h1>Security Event Timeline</h1>
+
+        <p>
+            Monitor timestamped network records and explore
+            communication activity in chronological order.
+        </p>
+
+        <span class="timeline-tag">
+            SECURITY EVENT MONITOR
+        </span>
+
+    </div>
+
+    {% if not data.available %}
+
+        <div class="timeline-notice">
+            {{ data.message }}
+        </div>
+
+    {% else %}
+
+        {% if data.is_demo %}
+            <div class="timeline-notice">
+                DEMO DATASET: Timeline is generated from sample data.
+            </div>
+        {% endif %}
+
+        <div class="timeline-grid">
+
+            <div class="timeline-card">
+                <p>Total Network Records</p>
+                <h2 class="cyan">{{ data.total }}</h2>
+            </div>
+
+            <div class="timeline-card">
+                <p>Events Displayed</p>
+                <h2 class="green">{{ data.events|length }}</h2>
+            </div>
+
+            <div class="timeline-card">
+                <p>Dates with Events</p>
+                <h2 class="purple">{{ data.daily_events|length }}</h2>
+            </div>
+
+        </div>
+
+        <!-- DAILY EVENT SUMMARY -->
+
+        <div class="timeline-section">
+
+            <h2>Daily Event Summary</h2>
+
+            {% if data.daily_events %}
+
+                <table class="timeline-table">
+
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Number of Events</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in data.daily_events %}
+
+                        <tr>
+                            <td>{{ item.date }}</td>
+                            <td>{{ item.count }}</td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <p class="timeline-empty">
+                    No daily event information available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- EVENT TIMELINE -->
+
+        <div class="timeline-section">
+
+            <h2>Recent Security Events</h2>
+
+            {% if data.events and data.has_timestamp %}
+
+                <div class="timeline-list">
+
+                    {% for event in data.events %}
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-dot"></div>
+
+                        <div>
+
+                            <strong>
+                                {{ event.timestamp }}
+                            </strong>
+
+                            <p>
+                                Source IP:
+                                {{ event.get("source_ip", "Not available") }}
+                            </p>
+
+                            <p>
+                                Destination IP:
+                                {{ event.get("destination_ip", "Not available") }}
+                            </p>
+
+                            <p>
+                                Protocol:
+                                {{ event.get("protocol", "Not available") }}
+                            </p>
+
+                            <p>
+                                Dataset Label:
+                                {{ event.get("label", "Not available") }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% elif not data.has_timestamp %}
+
+                <p class="timeline-empty">
+                    Timestamp column was not found in the dataset.
+                    Add a timestamp column to view chronological events.
+                </p>
+
+            {% else %}
+
+                <p class="timeline-empty">
+                    No timestamped event records available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="timeline-notice">
+            This timeline displays records from your uploaded dataset.
+            It is not a live network monitoring system.
+            Event labels are shown as provided by the dataset.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

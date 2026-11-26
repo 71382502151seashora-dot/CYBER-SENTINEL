@@ -1,0 +1,260 @@
+
+{% extends "base.html" %}
+
+{% block title %}User Activity Logs | Cyber Sentinel{% endblock %}
+
+{% block content %}
+
+<style>
+.activity-page {
+    padding: 24px;
+    color: #e8f3ff;
+}
+
+.activity-hero {
+    padding: 28px;
+    border-radius: 18px;
+    background: linear-gradient(120deg, #102b43, #091827);
+    border: 1px solid #1b4561;
+    margin-bottom: 24px;
+}
+
+.activity-hero h1 {
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+
+.activity-hero p {
+    color: #a8c1d5;
+    margin: 0;
+}
+
+.activity-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.activity-card {
+    background: #101f30;
+    border: 1px solid #203b52;
+    border-radius: 15px;
+    padding: 22px;
+}
+
+.activity-card p {
+    color: #9eb5ca;
+    margin: 0 0 12px;
+    font-size: 14px;
+}
+
+.activity-card h2 {
+    font-size: 29px;
+    margin: 0;
+    color: #25d9f5;
+}
+
+.activity-table-box {
+    background: #101f30;
+    border: 1px solid #203b52;
+    border-radius: 15px;
+    padding: 22px;
+    overflow-x: auto;
+}
+
+.activity-table-box h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+.activity-table th {
+    text-align: left;
+    padding: 15px;
+    color: #24d9f5;
+    background: #142d43;
+    font-size: 13px;
+}
+
+.activity-table td {
+    padding: 15px;
+    border-bottom: 1px solid #263c50;
+    color: #d5e5f2;
+    font-size: 14px;
+}
+
+.activity-table tr:hover {
+    background: #162b40;
+}
+
+.activity-badge {
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.login-badge {
+    background: #123d32;
+    color: #62e6b2;
+}
+
+.logout-badge {
+    background: #3b2930;
+    color: #ff9b9b;
+}
+
+.register-badge {
+    background: #173b56;
+    color: #70caff;
+}
+
+.role-badge {
+    background: #243a54;
+    color: #b9d8f5;
+}
+
+.empty-activity {
+    text-align: center;
+    padding: 45px 15px;
+    color: #9eb5ca;
+}
+
+@media(max-width: 900px) {
+    .activity-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media(max-width: 550px) {
+    .activity-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .activity-page {
+        padding: 12px;
+    }
+}
+</style>
+
+<div class="activity-page">
+
+    <div class="activity-hero">
+        <h1>👥 User Activity Logs</h1>
+        <p>Monitor user registrations, login sessions and logout activities.</p>
+    </div>
+
+    <div class="activity-stats">
+
+        <div class="activity-card">
+            <p>Total Activities</p>
+            <h2>{{ data.total }}</h2>
+        </div>
+
+        <div class="activity-card">
+            <p>Total Logins</p>
+            <h2>{{ data.logins }}</h2>
+        </div>
+
+        <div class="activity-card">
+            <p>Total Logouts</p>
+            <h2>{{ data.logouts }}</h2>
+        </div>
+
+        <div class="activity-card">
+            <p>Registrations</p>
+            <h2>{{ data.registrations }}</h2>
+        </div>
+
+    </div>
+
+    <div class="activity-table-box">
+
+        <h2>Recent User Activities</h2>
+
+        {% if data.logs %}
+
+        <table class="activity-table">
+
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Activity</th>
+                    <th>Date & Time</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in data.logs %}
+
+                <tr>
+                    <td>{{ loop.index }}</td>
+
+                    <td>{{ item.name }}</td>
+
+                    <td>{{ item.email }}</td>
+
+                    <td>
+                        <span class="activity-badge role-badge">
+                            {{ item.role|title }}
+                        </span>
+                    </td>
+
+                    <td>
+
+                        {% if item.action == "Login" %}
+
+                            <span class="activity-badge login-badge">
+                                Login
+                            </span>
+
+                        {% elif item.action == "Logout" %}
+
+                            <span class="activity-badge logout-badge">
+                                Logout
+                            </span>
+
+                        {% else %}
+
+                            <span class="activity-badge register-badge">
+                                {{ item.action }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>{{ item.time }}</td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty-activity">
+            <h3>No Activity Records Found</h3>
+            <p>User login, logout and registration activities will appear here.</p>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
